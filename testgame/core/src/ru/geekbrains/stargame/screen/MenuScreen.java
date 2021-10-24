@@ -1,52 +1,64 @@
 package ru.geekbrains.stargame.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.stargame.base.BaseScreen;
+import ru.geekbrains.stargame.math.Rect;
+import ru.geekbrains.stargame.sprite.Background;
+import ru.geekbrains.stargame.sprite.Logo;
 
 public class MenuScreen extends BaseScreen {
 
+    private Texture bg;
     private Texture img;
-    private Vector2 touch;
-    private Vector2 position;
-    private Vector2 speed;
-    private Vector2 onClick;
-
+    private Background background;
+    private Logo logo;
 
     @Override
     public void show() {
         super.show();
+        bg = new Texture("textures/bg.png");
+        background = new Background(bg);
         img = new Texture("suprematism.jpg");
-        touch = new Vector2();
-        position = new Vector2();
-        speed = new Vector2();
-        onClick = new Vector2();
+        logo = new Logo(img);
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        super.resize(worldBounds);
+        background.resize(worldBounds);
+        logo.resize(worldBounds);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        batch.begin();
-        batch.draw(img, position.x, position.y, 200, 120);
-        position.add(speed);
-        if (Vector2.dst(onClick.x, onClick.y, position.x, position.y) < 1f) {
-            speed.set(0, 0);
-        }
-        batch.end();
+        update(delta);
+        draw();
     }
 
     @Override
     public void dispose() {
         super.dispose();
         img.dispose();
+        bg.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        onClick.set(screenX, Gdx.graphics.getHeight() - screenY);
-        speed.set(onClick.cpy().sub(position).nor());
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        logo.touchDown(touch, pointer, button);
         return false;
+    }
+
+    private void update(float delta) {
+        logo.update(delta);
+    }
+
+    private void draw() {
+        batch.begin();
+        background.draw(batch);
+        logo.draw(batch);
+        batch.end();
     }
 }
