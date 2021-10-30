@@ -1,15 +1,12 @@
 package ru.geekbrains.stargame.screen;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.stargame.base.BaseScreen;
 import ru.geekbrains.stargame.math.Rect;
-import ru.geekbrains.stargame.pool.BulletsPool;
 import ru.geekbrains.stargame.sprite.Background;
 import ru.geekbrains.stargame.sprite.Ship;
 import ru.geekbrains.stargame.sprite.Star;
@@ -23,11 +20,7 @@ public class GameScreen extends BaseScreen {
     private Background background;
 
     private Star[] stars;
-    private BulletsPool bulletsPool;
     private Ship ship;
-
-    private Music music;
-    private Sound shootSound;
 
     @Override
     public void show() {
@@ -39,19 +32,13 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
-        bulletsPool = new BulletsPool();
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
-        ship = new Ship(atlas, bulletsPool, shootSound);
-        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
-        music.setLooping(true);
-        music.play();
+        ship = new Ship(atlas);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
         update(delta);
-        freeAllDestroyed();
         draw();
     }
 
@@ -70,9 +57,6 @@ public class GameScreen extends BaseScreen {
         super.dispose();
         bg.dispose();
         atlas.dispose();
-        bulletsPool.dispose();
-        shootSound.dispose();
-        music.dispose();
     }
 
     @Override
@@ -103,12 +87,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
-        bulletsPool.updActiveObjs(delta);
         ship.update(delta);
-    }
-
-    private void freeAllDestroyed() {
-        bulletsPool.freeAllDestroyed();
     }
 
     private void draw() {
@@ -117,7 +96,6 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        bulletsPool.drawActiveObjs(batch);
         ship.draw(batch);
         batch.end();
     }
