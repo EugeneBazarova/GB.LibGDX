@@ -17,7 +17,9 @@ import ru.geekbrains.stargame.pool.ExplosionPool;
 import ru.geekbrains.stargame.sprite.Background;
 import ru.geekbrains.stargame.sprite.Bullets;
 import ru.geekbrains.stargame.sprite.EnemyShip;
+import ru.geekbrains.stargame.sprite.GameOver;
 import ru.geekbrains.stargame.sprite.MainShip;
+import ru.geekbrains.stargame.sprite.RestartButton;
 import ru.geekbrains.stargame.sprite.Star;
 import ru.geekbrains.stargame.util.EnemyEmitter;
 
@@ -42,6 +44,8 @@ public class GameScreen extends BaseScreen {
     private Sound explosionSound;
 
     private EnemyEmitter enemyEmitter;
+    private GameOver gameOver;
+    private RestartButton restartButton;
 
     @Override
     public void show() {
@@ -66,6 +70,9 @@ public class GameScreen extends BaseScreen {
         mainShip = new MainShip(atlas, bulletsPool, explosionPool, shootSound);
 
         enemyEmitter = new EnemyEmitter(enemyPool, worldBounds, atlas);
+
+        gameOver = new GameOver(atlas);
+        restartButton = new RestartButton(atlas, this);
     }
 
     @Override
@@ -85,6 +92,8 @@ public class GameScreen extends BaseScreen {
             star.resize(worldBounds);
         }
         mainShip.resize(worldBounds);
+        gameOver.resize(worldBounds);
+        restartButton.resize(worldBounds);
     }
 
     @Override
@@ -116,12 +125,14 @@ public class GameScreen extends BaseScreen {
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         mainShip.touchDown(touch, pointer, button);
+        restartButton.touchDown(touch, pointer, button);
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
         mainShip.touchUp(touch, pointer, button);
+        restartButton.touchUp(touch, pointer, button);
         return false;
     }
 
@@ -178,6 +189,13 @@ public class GameScreen extends BaseScreen {
         enemyPool.freeAllDestroyed();
     }
 
+    public void restartGame() {
+        bulletsPool.dispose();
+        enemyPool.dispose();
+        explosionPool.dispose();
+        mainShip.flushDestroy();
+    }
+
     private void draw() {
         batch.begin();
         background.draw(batch);
@@ -188,10 +206,11 @@ public class GameScreen extends BaseScreen {
             bulletsPool.drawActiveObjs(batch);
             enemyPool.drawActiveObjs(batch);
             mainShip.draw(batch);
+        } else {
+            gameOver.draw(batch);
+            restartButton.draw(batch);
         }
         explosionPool.drawActiveObjs(batch);
         batch.end();
     }
-
-
 }
