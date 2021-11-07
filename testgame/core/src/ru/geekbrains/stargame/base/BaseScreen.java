@@ -15,32 +15,32 @@ import ru.geekbrains.stargame.math.Rect;
 public class BaseScreen implements Screen, InputProcessor {
 
     private Rect screenBounds;
-    private Rect worldBounds;
+    protected Rect worldBounds;
     private Rect glBounds;
 
     private Matrix4 worldToGl;
     private Matrix3 screenToWorld;
 
-    private Vector2 touch;
+    private Vector2 touch = new Vector2();
 
     protected SpriteBatch batch;
 
     @Override
     public void show() {
-        batch = new SpriteBatch();
-        Gdx.input.setInputProcessor(this);
+        System.out.println("show");
         screenBounds = new Rect();
         worldBounds = new Rect();
         glBounds = new Rect(0, 0, 1f, 1f);
         worldToGl = new Matrix4();
         screenToWorld = new Matrix3();
-        touch = new Vector2();
+        batch = new SpriteBatch();
+        batch.getProjectionMatrix().idt();
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-
     }
 
     @Override
@@ -65,36 +65,41 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public void pause() {
-
+        System.out.println("pause");
     }
 
     @Override
     public void resume() {
-
+        System.out.println("resume");
     }
 
     @Override
     public void hide() {
+        System.out.println("hide");
         dispose();
     }
 
     @Override
     public void dispose() {
+        System.out.println("dispose");
         batch.dispose();
     }
 
     @Override
     public boolean keyDown(int keycode) {
+        System.out.println("keyDown keycode = " + keycode);
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
+        System.out.println("keyUp keycode = " + keycode);
         return false;
     }
 
     @Override
     public boolean keyTyped(char character) {
+        System.out.println("keyTyped character = " + character);
         return false;
     }
 
@@ -144,6 +149,7 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        System.out.println("scrolled amountX = " + amountX + " amountY = " + amountY);
         return false;
     }
 }
