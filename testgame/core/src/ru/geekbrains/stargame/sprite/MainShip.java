@@ -36,7 +36,7 @@ public class MainShip extends Ship {
         this.bulletsPos = new Vector2();
         this.bulletsHeight = 0.01f;
         this.dmg = 1;
-        this.hp = 1;
+        this.hp = HP;
         this.v = new Vector2();
         this.v0 = new Vector2(0.5f, 0);
         this.reloadInterval = RELOAD_INTERVAL;
