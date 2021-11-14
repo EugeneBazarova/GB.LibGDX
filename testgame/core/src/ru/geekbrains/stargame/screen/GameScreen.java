@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
@@ -20,6 +21,7 @@ import ru.geekbrains.stargame.sprite.Background;
 import ru.geekbrains.stargame.sprite.Bullets;
 import ru.geekbrains.stargame.sprite.EnemyShip;
 import ru.geekbrains.stargame.sprite.GameOver;
+import ru.geekbrains.stargame.sprite.HpBar;
 import ru.geekbrains.stargame.sprite.MainShip;
 import ru.geekbrains.stargame.sprite.RestartButton;
 import ru.geekbrains.stargame.sprite.Star;
@@ -35,6 +37,7 @@ public class GameScreen extends BaseScreen {
     private static final float MARGIN = 0.01f;
 
     private TextureAtlas atlas;
+    private TextureAtlas hpAtlas;
     private Texture bg;
     private Background background;
 
@@ -53,6 +56,7 @@ public class GameScreen extends BaseScreen {
     private EnemyEmitter enemyEmitter;
     private GameOver gameOver;
     private RestartButton restartButton;
+    private HpBar hpBar;
 
     private int frags;
     private StringBuilder sbFrags;
@@ -71,27 +75,28 @@ public class GameScreen extends BaseScreen {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
         atlas = new TextureAtlas("textures/mainAtlas.tpack");
+        hpAtlas = new TextureAtlas("textures/hpbar.pack");
         bg = new Texture("textures/bg.png");
         background = new Background(bg);
         stars = new Star[STAR_COUNT];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
+
         bulletsPool = new BulletsPool();
         explosionPool = new ExplosionPool(atlas, explosionSound);
         enemyPool = new EnemyPool(bulletsPool, explosionPool, worldBounds, shootSound);
 
         mainShip = new MainShip(atlas, bulletsPool, explosionPool, shootSound);
-
         enemyEmitter = new EnemyEmitter(enemyPool, worldBounds, atlas);
-
+        hpBar = new HpBar(hpAtlas);
         gameOver = new GameOver(atlas);
         restartButton = new RestartButton(atlas, this);
         frags = 0;
         sbFrags = new StringBuilder();
         sbHP = new StringBuilder();
         sbLevel = new StringBuilder();
-        font = new Font("font/font.fnt", "font/font.png");
+        font = new Font("font/DialogInputFont.fnt", "font/DialogInputFont.png");
         font.setSize(FONT_SIZE);
     }
 
@@ -112,6 +117,7 @@ public class GameScreen extends BaseScreen {
             star.resize(worldBounds);
         }
         mainShip.resize(worldBounds);
+        hpBar.resize(worldBounds);
         gameOver.resize(worldBounds);
         restartButton.resize(worldBounds);
     }
@@ -121,6 +127,7 @@ public class GameScreen extends BaseScreen {
         super.dispose();
         bg.dispose();
         atlas.dispose();
+        hpAtlas.dispose();
         bulletsPool.dispose();
         explosionPool.dispose();
         enemyPool.dispose();
@@ -234,6 +241,7 @@ public class GameScreen extends BaseScreen {
             gameOver.draw(batch);
             restartButton.draw(batch);
         }
+        hpBar.draw(batch);
         explosionPool.drawActiveObjs(batch);
         printInfo();
         batch.end();

@@ -1,6 +1,7 @@
 package ru.geekbrains.stargame.base;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -17,6 +18,7 @@ public class Ship extends Sprite {
     protected TextureRegion bulletsRegion;
     protected Vector2 bulletsV;
     protected Vector2 bulletsPos;
+    protected TextureAtlas.AtlasRegion hpBar;
     protected float bulletsHeight;
     protected int dmg;
     protected Sound bulletsSound;
